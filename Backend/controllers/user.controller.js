@@ -2,7 +2,7 @@ const userModel=require('../models/user.model')
 const userService=require('../services/user.services');
 const {validationResult}=require('express-validator')
 const {hashpassword}=require('../models/user.model');
-const blacklistTokenModel=require("../models/blacklistToken.model");
+
 
 
 
@@ -17,6 +17,10 @@ module.exports.registerUser =async(req,res,next)=>{
     }
 
     const {fullname,email,password}=req.body;
+    const isuseralreadyexits=userModel.findOne({email});
+    if(isuseralreadyexits){
+        return res.status(400).json({message:"user already exists"});
+    }
 
     const hashedPassword= await userModel.hashpassword(password);
      
@@ -70,10 +74,12 @@ module.exports.getUserProfile=async (req,res,next)=>{
 }
 
 module.exports.logoutUser=async(req,res,next)=>{
-    res.clearCookie('token');
+    
     const token=req.cookies.token || req.headers.authorization.split(' ')[1];
     await blacklistTokenModel.create({token})
-
+    res.clearCookie('token');
 
     res.status(200).json({message:'Logged Out'})
 }
+
+
