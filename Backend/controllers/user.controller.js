@@ -61,7 +61,6 @@ module.exports.loginUser = async (req, res, next) => {
 
     res.status(200).json({ token, user });
 }
-
 module.exports.getUserProfile = async (req, res, next) => {
 
     res.status(200).json(req.user);
