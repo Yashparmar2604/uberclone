@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import {CaptainDataContext} from '../context/CaptainContext'
+import axios from'axios'
+import{useNavigate} from 'react-router-dom'
+
 
 const Captainsignup = () => {
     const [ email, setEmail ] = useState('')
@@ -10,6 +14,10 @@ const Captainsignup = () => {
       const [ vehiclePlate, setVehiclePlate ] = useState('')
       const [ vehicleCapacity, setVehicleCapacity ] = useState('')
       const [ vehicleType, setVehicleType ] = useState('')
+      const {captain,setCaptain}=React.useContext(CaptainDataContext)
+      const navigate=useNavigate();
+
+
       const submitHandler = async (e) => {
         e.preventDefault()
         const captainData = {
@@ -26,6 +34,16 @@ const Captainsignup = () => {
             vehicleType: vehicleType
           }
         }
+        
+         const response=await axios.post(`${import.meta.env.VITE_BASE_URL}/captain/register`,captainData)
+         console.log(response)
+         if (response.status === 201) {
+          const data = response.data
+          setCaptain(data.captain)
+          localStorage.setItem('token', data.token)
+          navigate('/captain-home')
+        }
+
         setEmail('')
         setFirstName('')
         setLastName('')
@@ -138,7 +156,7 @@ const Captainsignup = () => {
                       <option value="" disabled>Select Vehicle Type</option>
                       <option value="car">Car</option>
                       <option value="auto">Auto</option>
-                      <option value="moto">Moto</option>
+                      <option value="motorcycle">Moto</option>
                     </select>
                   </div>
         
