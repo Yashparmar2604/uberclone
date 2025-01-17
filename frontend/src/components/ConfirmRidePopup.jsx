@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React ,{useState}from 'react'
 import { Link } from 'react-router-dom';
 
 const ConfirmRidePopup = (props) => {
@@ -18,7 +18,7 @@ const ConfirmRidePopup = (props) => {
     <h5
    className="p-1 text-center w-[93%]  absolute top-0"
    onClick={() => {
-     props.setconfirmridePopuppanel(false);
+     props.setconfirmridePopuppanel(true);
    }}
  >
    <i className=" text-3xl text-gray-200 ri-arrow-down-wide-line"></i>
