@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState ,useContext } from 'react'
 import { Link } from 'react-router-dom'
 import {CaptainDataContext} from '../context/CapatainContext'
 import axios from'axios'
@@ -14,7 +14,7 @@ const Captainsignup = () => {
       const [ vehiclePlate, setVehiclePlate ] = useState('')
       const [ vehicleCapacity, setVehicleCapacity ] = useState('')
       const [ vehicleType, setVehicleType ] = useState('')
-      const {captain,setCaptain}=React.useContext(CaptainDataContext)
+      const {captain,setCaptain}=useContext(CaptainDataContext)
       const navigate=useNavigate();
 
 
