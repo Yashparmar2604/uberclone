@@ -6,11 +6,12 @@ import LocationSearchpanel from "../components/LocationSearchpanel";
 import VehiclePanel from "../components/VehiclePanel";
 import ConfirmRide from "../components/ConfirmRide";
 import LookingForDriver from "../components/LookingForDriver";
-import WaitingForDrivier from "../components/WaitingForDrivier";
+import WaitingForDriver from '../components/WaitingForDriver';
 import axios from 'axios';
+import LiveTracking from "../components/LiveTracking";
 import { SocketContext } from "../context/SocketContext";
 import { UserDataContext } from "../context/UserContext";
-
+import { useNavigate } from "react-router-dom";
 const Home = () => {
   const [ pickup, setPickup ] = useState('')
   const [ destination, setDestination ] = useState('')
@@ -35,11 +36,24 @@ const Home = () => {
 const { socket }=useContext(SocketContext);
 const{user}=useContext(UserDataContext);
 
+const navigate=useNavigate();
+
 
 useEffect(() => {
     socket.emit("join", { userType: "user", userId: user._id })
 }, [ user ])
   
+
+socket.on('ride-confirmed',ride=>{
+    setVehicleFound(false);
+    setWaitingForDriver(true);
+    setRide(ride)
+})
+
+socket.on('ride-started',ride =>{
+    setWaitingForDriver(false);
+    navigate('/riding',{state:{ride}})
+})
 
 
   const handlePickupChange = async (e) => {
@@ -189,6 +203,10 @@ useEffect(() => {
   return (
       <div className='h-screen relative overflow-hidden'>
           <img className='w-16 absolute left-5 top-5' src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png" alt="" />
+          <div className='h-screen w-screen'>
+                {/* image for temporary use  */}
+                <LiveTracking />
+            </div>
          
           <div className=' flex flex-col justify-end h-screen absolute top-0 w-full'>
               <div className='h-[30%] p-6 bg-white relative'>
@@ -267,13 +285,13 @@ useEffect(() => {
                   setVehicleFound={setVehicleFound} />
           </div>
           <div ref={waitingForDriverRef} className='fixed w-full  z-10 bottom-0  bg-white px-3 py-6 pt-12'>
-              <waitingForDriver
-                  ride={ride}
-                  setVehicleFound={setVehicleFound}
-                  setWaitingForDriver={setWaitingForDriver}
-                  waitingForDriver={waitingForDriver} />
-          </div>
-      </div>
+                <WaitingForDriver
+                    ride={ride}
+                    setVehicleFound={setVehicleFound}
+                    setWaitingForDriver={setWaitingForDriver}
+                    waitingForDriver={waitingForDriver} />
+            </div>
+        </div>
   )
 
 };
